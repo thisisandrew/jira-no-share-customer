@@ -1,0 +1,14 @@
+{
+	"manifest_version": 2,
+	"name":  "Jira No Share With Customer",
+	"description": "Hide all buttons and options for sharing comment and estimates with Customers in Jira Software.",
+	"version": "0.1.0",
+	"content_scripts": [
+		{
+		    "matches": [
+		    	"https://*.atlassian.net/*"
+		    ],
+		    "js": ["content.js"]
+		}
+	]
+}
