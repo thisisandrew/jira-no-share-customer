@@ -1,32 +1,146 @@
+var externalSubmits = document.getElementsByClassName("sd-external-submit");
+var externalCommentsTabs = document.getElementsByClassName("js-sd-external-comment");
+var buttonPublic = document.getElementById('button-public');
+var internalCommentsTabs = document.getElementsByClassName("js-sd-internal-comment");
+var clientTestingNotesTextArea = document.getElementById("customfield_12400");
+
+var clickEvent = new MouseEvent("click", {
+	"view": window,
+	"bubbles": true,
+	"cancelable": false
+});
+
+var actionClientTextArea = function() {
+	var disabled = false;
+
+	return {
+		do: function() {
+			if (disabled) {
+				return;
+			}
+
+			if (!clientTestingNotesTextArea) {
+				clientTestingNotesTextArea = document.getElementById("customfield_12400");
+			}
+
+			if (clientTestingNotesTextArea) {
+				clientTestingNotesTextArea.setAttribute("disabled", "");
+				disabled = true;
+			}
+		}
+	}
+};
+
+var actionExternalSubmits = function() {
+	var disabled = false;
+
+	return {
+		do: function() {
+			if (disabled) {
+				return;
+			}
+
+			if (!externalSubmits) {
+				externalSubmits = document.getElementsByClassName("sd-external-submit");
+			}
+
+			if (externalSubmits && externalSubmits.length > 0) {
+				for (var i = 0; i < externalSubmits.length; i++) {
+					externalSubmits[i].style.display = "none";
+				}
+
+				disabled = true;
+			}
+		}
+	}
+};
+
+var actionButtonPublic = function() {
+	var disabled = false;
+
+	return {
+		do: function() {
+			if (disabled) {
+				return;
+			}
+
+			if (!buttonPublic) {
+				buttonPublic = document.getElementById('button-public');
+			}
+
+			if (buttonPublic){
+				buttonPublic.style.display = "none";
+				disabled = true;
+			}
+		}
+	}
+};
+
+var actionInternalComments = function() {
+	var disabled = false;
+
+	return {
+		do: function() {
+			if (disabled) {
+				return;
+			}
+
+			if (!internalCommentsTabs) {
+				internalCommentsTabs = document.getElementsByClassName("js-sd-internal-comment");
+			}
+
+			if (internalCommentsTabs && internalCommentsTabs.length > 0){
+				for (var i = 0; i < internalCommentsTabs.length; i++) {
+					internalCommentsTabs[i].dispatchEvent(clickEvent);
+					internalCommentsTabs[i].classList.remove("inactive");
+					internalCommentsTabs[i].classList.add("active");
+				}
+
+				disabled = true;
+			}
+		}
+	}
+};
+
+var actionExternalComments = function() {
+	var disabled = false;
+
+	return {
+		do: function() {
+			if (disabled) {
+				return;
+			}
+
+			if (!externalCommentsTabs) {
+				externalCommentsTabs = document.getElementsByClassName("js-sd-external-comment");
+			}
+
+			if (externalCommentsTabs && externalCommentsTabs.length > 0){
+				for (var i = 0; i < externalCommentsTabs.length; i++) {
+					externalCommentsTabs[i].style.display = "none";
+				}
+
+				//We don't diable this one because there's more than one set of External comments which can appear in the DOM
+				//disabled = true;
+			}
+		}
+	}
+};
+
+var actions = [
+	actionClientTextArea(),
+	actionExternalSubmits(),
+	actionButtonPublic(),
+	actionInternalComments(),
+	actionExternalComments(),
+];
+
 var observer = new WebKitMutationObserver(function(mutations) {
 	mutations.forEach(function(mutation) {
-		var externalSubmits = document.getElementsByClassName("sd-external-submit");
-		for(var i = 0; i < externalSubmits.length; i++){
-			externalSubmits[i].style.display = "none";
-		}
-
-		if(document.getElementById('button-public') != null){
-			document.getElementById('button-public').style.display = "none";
-		}
-
-		var externalEstimationTabs = document.getElementsByClassName("js-sd-external-comment");
-		for(var i = 0; i < externalEstimationTabs.length; i++){
-			externalEstimationTabs[i].style.display = "none";
-		}
-
-		var clickEvent = new MouseEvent("click", {
-	    	"view": window,
-	    	"bubbles": true,
-	    	"cancelable": false
+		actions.forEach(function(fn) {
+			fn.do();
 		});
-
-		var internalEstimationTabs = document.getElementsByClassName("js-sd-internal-comment");
-		for(var i = 0; i < internalEstimationTabs.length; i++){
-			internalEstimationTabs[i].dispatchEvent(clickEvent);
-			internalEstimationTabs[i].classList.remove("inactive");
-			internalEstimationTabs[i].classList.add("active");
-		}
-	})
+	});
 });
 observer.observe(document.body, {
     attributes: true,
