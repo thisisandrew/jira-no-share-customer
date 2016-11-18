@@ -49,7 +49,12 @@ var actionExternalSubmits = function() {
 					externalSubmits[i].style.display = "none";
 				}
 
-				disabled = true;
+				/**
+				 * Multiple "sd-external-submit" can pop up all over the place after many 
+				 * different DOM mutations and so we shouldn't disable after 1 attempt as
+				 * we will miss some instances of this button type
+				 */
+				//disabled = true;
 			}
 		}
 	}
